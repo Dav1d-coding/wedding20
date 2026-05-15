@@ -1,0 +1,344 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+
+  /* palette */
+  --ink-0: #100d0a;
+  --ink-1: #1a1410;
+  --ivory: #f6efe5;
+  --champagne: #e8d6bd;
+  --beige: #c9ad8a;
+  --soft-gold: #b9915a;
+  --candle: #f2b66d;
+  --muted-brown: #5a3f2b;
+
+  /* surfaces */
+  --bg: var(--ink-0);
+  --fg: #faf6ef;
+  --text-muted: rgba(250, 246, 239, 0.88);
+  --text-soft: rgba(250, 246, 239, 0.72);
+
+  /* type */
+  --tracking-tight: -0.03em;
+}
+
+@theme inline {
+  --font-sans: var(--font-manrope);
+  --font-serif: var(--font-cormorant);
+}
+
+/* Имена: системный Lucida Calligraphy (Windows); на macOS/iOS — Apple Chancery и т.п. */
+.font-script {
+  font-family:
+    "Lucida Calligraphy",
+    "Segoe Script",
+    "Brush Script MT",
+    "Apple Chancery",
+    "Snell Roundhand",
+    cursive;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  background: #060303;
+  color: var(--fg);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+    "Apple Color Emoji", "Segoe UI Emoji";
+  letter-spacing: -0.005em;
+  overflow-x: hidden;
+}
+
+.page-shell {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Deep cinematic overlay (screen) */
+.page-shell::before {
+  content: none;
+}
+
+/* Контейнер фона для всех секций, начиная со 2-й */
+.after-hero-shell {
+  position: relative;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at top left, #1c0f08 0%, transparent 30%),
+    radial-gradient(circle at bottom right, #160b06 0%, transparent 30%),
+    linear-gradient(to bottom, #060303, #020101);
+}
+
+.after-hero-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 15;
+  background: radial-gradient(circle at center, rgba(255, 120, 40, 0.04), transparent 60%);
+  mix-blend-mode: screen;
+}
+
+/* Fire-spark circles (как «искорки от костра») */
+.particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* передний план относительно фона, но ниже основного контента (z-50) */
+  z-index: 45;
+}
+
+.spark {
+  position: absolute;
+  display: block;
+  top: -35vh;
+  border-radius: 9999px;
+  opacity: 1;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 240, 0.98) 0%,
+    rgba(255, 230, 180, 0.92) 12%,
+    rgba(255, 190, 120, 0.65) 28%,
+    rgba(255, 150, 70, 0.3) 45%,
+    rgba(255, 120, 40, 0.1) 60%,
+    transparent 78%
+  );
+  filter: blur(8px);
+  /* На некоторых системах/драйверах screen выглядит как “ничего”.
+     Делаем видимым везде, а “screen” можно вернуть позже. */
+  mix-blend-mode: normal;
+  /* Чуть ярче, чтобы было заметно на очень тёмном фоне */
+  box-shadow: 0 0 120px rgba(255, 170, 90, 0.16);
+  transform: translateZ(0);
+  animation:
+    fall var(--rise, 26s) linear infinite,
+    pulse var(--pulse, 3.4s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: transform, opacity;
+}
+
+.spark.s1 {
+  width: 140px;
+  height: 140px;
+}
+.spark.s2 {
+  width: 220px;
+  height: 220px;
+}
+.spark.s3 {
+  width: 320px;
+  height: 320px;
+}
+.spark.s4 {
+  width: 420px;
+  height: 420px;
+}
+
+@keyframes fall {
+  from {
+    transform: translateY(-40vh) translateX(0) scale(0.92);
+  }
+  to {
+    transform: translateY(160vh) translateX(var(--drift, 80px)) scale(1.28);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Искры всегда анимируются (даже при reduce motion) — по запросу */
+
+::selection {
+  background: rgba(242, 182, 109, 0.28);
+  color: var(--ivory);
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0.035;
+  background-image:
+    repeating-radial-gradient(circle at 0 0, transparent 0, rgba(255, 255, 255, 0.45) 1px, transparent 2px);
+  background-size: 4px 4px;
+  transform: translateZ(0);
+}
+
+.vignette {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  background: radial-gradient(closest-side at 50% 50%, transparent 58%, rgba(16, 13, 10, 0.38) 100%);
+}
+
+.glow-orbs {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background:
+    radial-gradient(420px 240px at 20% 20%, rgba(242, 182, 109, 0.14), transparent 70%),
+    radial-gradient(520px 300px at 75% 35%, rgba(185, 145, 90, 0.10), transparent 70%),
+    radial-gradient(520px 360px at 60% 85%, rgba(242, 182, 109, 0.08), transparent 70%);
+  filter: blur(0.2px);
+}
+
+/* Huge background glows (как bg1/bg2 в примере) */
+.bg {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(160px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.bg1 {
+  width: 900px;
+  height: 900px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 140, 50, 0.35) 0%,
+    rgba(255, 120, 30, 0.12) 35%,
+    transparent 70%
+  );
+  top: -350px;
+  left: -300px;
+  animation: move1 16s ease-in-out infinite alternate;
+}
+
+.bg2 {
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 190, 100, 0.18) 0%,
+    rgba(255, 140, 40, 0.08) 40%,
+    transparent 75%
+  );
+  bottom: -300px;
+  right: -250px;
+  animation: move2 20s ease-in-out infinite alternate;
+}
+
+@keyframes move1 {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(100px, 60px);
+  }
+}
+
+@keyframes move2 {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(-80px, -50px);
+  }
+}
+
+/* PNG с альфой: без подложки; лёгкая тень только от непрозрачных пикселей (drop-shadow), не box-shadow */
+.registration-bowl-frame {
+  isolation: isolate;
+}
+
+.registration-bowl {
+  display: block;
+  background: transparent;
+  filter: drop-shadow(0 18px 42px rgba(0, 0, 0, 0.38));
+}
+
+.container-editorial {
+  width: min(1120px, calc(100% - 48px));
+  margin-inline: auto;
+}
+
+.container-editorial {
+  width: min(1120px, calc(100% - 40px));
+}
+
+@media (max-width: 640px) {
+  .container-editorial {
+    width: calc(100% - 28px);
+  }
+}
+
+.serif {
+  font-family: var(--font-serif), ui-serif, Georgia, "Times New Roman", Times, serif;
+  letter-spacing: var(--tracking-tight);
+}
+
+.hairline {
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.soft-border {
+  border: 1px solid rgba(246, 239, 229, 0.18);
+}
+
+.glass {
+  background: linear-gradient(
+    180deg,
+    rgba(246, 239, 229, 0.1) 0%,
+    rgba(246, 239, 229, 0.05) 100%
+  );
+  border: 1px solid rgba(246, 239, 229, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+.glass-light {
+  background: linear-gradient(
+    180deg,
+    rgba(250, 246, 239, 0.96) 0%,
+    rgba(246, 239, 229, 0.9) 100%
+  );
+  border: 1px solid rgba(90, 63, 43, 0.12);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(12px);
+}
+
+@keyframes floatGlow {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate3d(0, -6px, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.9;
+  }
+}
+
+.soft-float {
+  animation: floatGlow 7.5s ease-in-out infinite;
+}
+
+.btn-premium {
+  border: 1px solid rgba(246, 239, 229, 0.14);
+  background: linear-gradient(180deg, rgba(246, 239, 229, 0.09), rgba(246, 239, 229, 0.05));
+  box-shadow: 0 0 26px rgba(242, 182, 109, 0.10);
+}
