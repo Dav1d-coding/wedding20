@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Reveal } from "@/components/motion/Reveal";
 import { cn } from "@/lib/cn";
@@ -10,6 +10,29 @@ type Attendance = "yes" | "no" | "maybe";
 type MealChoice = "" | "meat" | "fish";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://127.0.0.1:8000";
+
+const RSVP_COOKIE_NAME = "wedding_rsvp_sent";
+
+function getCookie(name: string) {
+  if (typeof document === "undefined") return null;
+
+  const value = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(`${name}=`));
+
+  return value ? decodeURIComponent(value.split("=")[1] ?? "") : null;
+}
+
+function setCookie(name: string, value: string, maxAgeSeconds: number) {
+  if (typeof document === "undefined") return;
+
+  document.cookie = [
+    `${name}=${encodeURIComponent(value)}`,
+    `max-age=${maxAgeSeconds}`,
+    "path=/",
+    "SameSite=Lax",
+  ].join("; ");
+}
 
 function Segment<T extends string>({
   value,
@@ -78,6 +101,7 @@ export function RsvpForm() {
   const [comment, setComment] = useState("");
 
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
+  const [alreadySent, setAlreadySent] = useState(false);
 
   const canPickMeal = attendance === "yes";
 
@@ -94,7 +118,20 @@ export function RsvpForm() {
     [allergies, attendance, canPickMeal, comment, day1, day2, day3, fullName, mealChoice, needsTransfer],
   );
 
+  useEffect(() => {
+    const sentCookie = getCookie(RSVP_COOKIE_NAME);
+
+    if (sentCookie === "1") {
+      setAlreadySent(true);
+      setStatus("ok");
+    }
+  }, []);
+
   async function submit() {
+    if (alreadySent) {
+      setStatus("ok");
+      return;
+    }
     setStatus("sending");
     try {
       const res = await fetch(`${API_BASE}/api/rsvp/`, {
@@ -104,7 +141,13 @@ export function RsvpForm() {
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = (await res.json()) as { ok: boolean };
-      setStatus(data.ok ? "ok" : "error");
+      if (data.ok) {
+        // setCookie(RSVP_COOKIE_NAME, "1", 60 * 60 * 24 * 365);
+        setAlreadySent(true);
+        setStatus("ok");
+      } else {
+        setStatus("error");
+      }
     } catch {
       setStatus("error");
     }
@@ -113,12 +156,8 @@ export function RsvpForm() {
   return (
     <SectionFrame id="rsvp" tone="warm" padding="lg">
       <div className="container-editorial">
-        <Reveal>
-          <p className="hairline text-[12px] text-[rgba(250,246,239,0.82)]">RSVP</p>
-        </Reveal>
         <Reveal delay={0.08}>
-          <h2 className="serif mt-6 text-[clamp(30px,3.5vw,56px)] leading-[1.02] tracking-[-0.05em] text-[rgba(250,246,239,0.96)]">
-            Ответ — как тихая сцена.
+          <h2 className="serif mt-3 text-[clamp(30px,3.5vw,56px)] leading-[1.02] tracking-[-0.05em] text-[rgba(250,246,239,0.96)]">
             <br />
             Пожалуйста, заполните форму.
           </h2>
@@ -130,7 +169,7 @@ export function RsvpForm() {
               <div className="rounded-[28px] glass p-6 lg:p-8">
                 <div className="grid grid-cols-12 gap-5">
                   <div className="col-span-12">
-                    <Field label="ФИО" hint="Как в списке гостей">
+                    <Field label="ФИО">
                       <input
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
@@ -280,29 +319,53 @@ export function RsvpForm() {
                     </Field>
                   </div>
 
-                  <div className="col-span-12 flex flex-col md:flex-row items-start md:items-center gap-4 md:justify-between pt-2">
+                  <div className="col-span-12 pt-2">
                     <button
                       type="button"
                       onClick={submit}
                       disabled={status === "sending" || !fullName.trim()}
                       className={cn(
-                        "rounded-full px-6 py-4 text-[13px] hairline",
-                        "bg-[rgba(242,182,109,0.18)] hover:bg-[rgba(242,182,109,0.22)]",
+                        "w-full rounded-full px-6 py-4 text-[13px] hairline",
+                        "bg-[rgba(242,182,109,0.18)] hover:bg-[rgba(242,182,109,0.24)]",
                         "soft-border shadow-[0_0_30px_rgba(242,182,109,0.16)]",
                         "transition disabled:opacity-50 disabled:cursor-not-allowed",
                         "outline-none focus-visible:ring-2 focus-visible:ring-[rgba(242,182,109,0.35)]",
                       )}
                     >
-                      {status === "sending" ? "Отправляем…" : "Отправить ответ"}
+                      {status === "sending"
+                        ? "Отправляем…"
+                        : alreadySent
+                          ? "Ответ уже отправлен"
+                          : "Отправить ответ"}
                     </button>
 
-                    <p className="text-[12px] text-[rgba(250,246,239,0.78)]">
-                      {status === "ok"
-                        ? "Спасибо. Мы получили ваш ответ."
-                        : status === "error"
-                          ? "Не удалось отправить. Попробуйте ещё раз."
-                          : " "}
-                    </p>
+                    {status === "ok" ? (
+                      <div className="mt-5 overflow-hidden rounded-[24px] soft-border bg-[rgba(246,239,229,0.08)] p-5 text-center shadow-[0_0_40px_rgba(242,182,109,0.12)]">
+                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[rgba(242,182,109,0.16)] text-[22px] shadow-[0_0_30px_rgba(242,182,109,0.18)]">
+                          ✦
+                        </div>
+
+                        <p className="serif mt-4 text-[22px] leading-[1.2] tracking-[-0.04em] text-[rgba(250,246,239,0.96)]">
+                          Спасибо!
+                        </p>
+
+                        <p className="mt-3 text-[14px] leading-[1.75] text-[rgba(250,246,239,0.78)]">
+                          Мы всё получили и очень рады, что вы стали частью нашей истории.
+                        </p>
+                      </div>
+                    ) : null}
+
+                    {status === "error" ? (
+                      <div className="mt-5 rounded-[24px] soft-border bg-[rgba(120,35,25,0.18)] p-5 text-center shadow-[0_0_30px_rgba(120,35,25,0.12)]">
+                        <p className="serif text-[20px] leading-[1.25] tracking-[-0.04em] text-[rgba(250,246,239,0.96)]">
+                          Не удалось отправить ответ
+                        </p>
+
+                        <p className="mt-2 text-[13px] leading-[1.7] text-[rgba(250,246,239,0.72)]">
+                          Попробуйте ещё раз чуть позже.
+                        </p>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -319,18 +382,9 @@ export function RsvpForm() {
                 </p>
                 <div className="mt-7 rounded-[20px] bg-[rgba(16,13,10,0.35)] soft-border p-5">
                   <p className="hairline text-[11px] text-[rgba(250,246,239,0.82)]">Контакт</p>
-                  <p className="mt-2 text-[14px] text-[rgba(250,246,239,0.92)]">[Имя]</p>
+                  <p className="mt-2 text-[14px] text-[rgba(250,246,239,0.92)]">Виктория</p>
                   <p className="mt-1 text-[13px] text-[rgba(250,246,239,0.8)]">
-                    [Телефон / Telegram]
-                  </p>
-                </div>
-
-                <div className="mt-10">
-                  <p className="hairline text-[11px] text-[rgba(250,246,239,0.82)]">Тишина</p>
-                  <p className="mt-2 serif text-[18px] leading-[1.55] text-[rgba(250,246,239,0.9)]">
-                    Мы очень ценим камерность.
-                    <br />
-                    Спасибо, что вы — часть этой истории.
+                    [+7-(937)-623-31-90 / @victoria_akhmetova]
                   </p>
                 </div>
               </div>

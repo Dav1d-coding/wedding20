@@ -5,11 +5,13 @@ import { motion } from "framer-motion";
 import { Reveal } from "@/components/motion/Reveal";
 
 const swatches = [
-  { name: "Ivory", color: "#F6EFE5" },
-  { name: "Champagne", color: "#E8D6BD" },
-  { name: "Beige", color: "#C9AD8A" },
-  { name: "Soft gold", color: "#B9915A" },
-  { name: "Muted brown", color: "#5A3F2B" },
+  { name: "Желтый", color: "#e1e294" },
+  { name: "Бежевый", color: "#C9AD8A" },
+  { name: "Золотой", color: "#d3af37" },
+  { name: "Коричневый", color: "#5A3F2B" },
+  { name: "Зелёный", color: "#627a4c" },
+  { name: "Серый", color: "#626460" },
+  { name: "Чёрный", color: "#050505", note: "только для мужчин" },
 ];
 
 export function DressCode() {
@@ -29,7 +31,7 @@ export function DressCode() {
       </Reveal>
 
       <Reveal delay={0.14}>
-        <div className="mt-8 grid grid-cols-2 md:grid-cols-5 gap-3 relative z-10">
+        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 relative z-10">
           {swatches.map((s) => (
             <motion.div
               key={s.name}
@@ -43,13 +45,22 @@ export function DressCode() {
               <div
                 className="h-14"
                 style={{
-                  background: `linear-gradient(180deg, ${s.color} 0%, rgba(16,13,10,0.12) 120%)`,
+                  background: `${s.color}`,
                 }}
               />
-              <div className="px-3 py-3 flex items-center justify-between">
-                <p className="text-[12px] text-[rgba(250,246,239,0.86)]">{s.name}</p>
+              <div className="px-3 py-3 flex min-h-[62px] items-start justify-between gap-2">
+                <div>
+                  <p className="text-[12px] text-[rgba(250,246,239,0.86)]">{s.name}</p>
+
+                  {"note" in s && s.note ? (
+                    <p className="mt-1 text-[10px] leading-[1.25] text-[rgba(250,246,239,0.58)]">
+                      {s.note}
+                    </p>
+                  ) : null}
+                </div>
+
                 <span
-                  className="h-2.5 w-2.5 rounded-full"
+                  className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full"
                   style={{
                     background: s.color,
                     boxShadow: "0 0 18px rgba(242,182,109,0.10)",

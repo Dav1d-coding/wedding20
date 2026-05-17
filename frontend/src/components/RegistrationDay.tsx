@@ -18,7 +18,7 @@ export function RegistrationDay() {
       <div className="container-editorial">
         <div className="mx-auto flex max-w-[min(36rem,94vw)] flex-col items-center text-center">
           <Reveal>
-            <h2 className="font-script text-[clamp(38px,9vw,92px)] leading-[1.04] text-[rgba(250,246,239,0.98)] [text-shadow:0_8px_36px_rgba(0,0,0,0.35)]">
+            <h2 className="font-script text-[clamp(32px,7vw,72px)] leading-[1.04] text-[rgba(250,246,239,0.98)] [text-shadow:0_8px_36px_rgba(0,0,0,0.35)]">
               День регистрации!
             </h2>
           </Reveal>

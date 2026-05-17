@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class RSVP(models.Model):
     class Attendance(models.TextChoices):
         YES = "yes", "Приду"
@@ -27,6 +28,8 @@ class RSVP(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name = "Ответ гостя"
+        verbose_name_plural = "Ответы гостей"
 
     def __str__(self) -> str:
         return f"{self.full_name} ({self.attendance})"

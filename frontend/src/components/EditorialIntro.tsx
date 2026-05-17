@@ -9,7 +9,7 @@ export function EditorialIntro() {
       <div className="container-editorial">
         <div className="relative z-10 mx-auto max-w-[min(40rem,92vw)] text-center">
           <Reveal>
-            <h2 className="font-script text-[clamp(36px,8.5vw,88px)] leading-[1.05] text-[rgba(250,246,239,0.98)] [text-shadow:0_8px_36px_rgba(0,0,0,0.35)]">
+            <h2 className="font-script text-[clamp(32px,7vw,70px)] leading-[1.05] text-[rgba(250,246,239,0.98)] [text-shadow:0_8px_36px_rgba(0,0,0,0.35)]">
               Дорогие гости!
             </h2>
           </Reveal>

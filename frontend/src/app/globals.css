@@ -66,10 +66,11 @@ body {
   content: none;
 }
 
-/* Контейнер фона для всех секций, начиная со 2-й */
 .after-hero-shell {
   position: relative;
-  overflow-x: hidden;
+  min-height: 100vh;
+  overflow-x: clip;
+  overflow-y: visible;
   background:
     radial-gradient(circle at top left, #1c0f08 0%, transparent 30%),
     radial-gradient(circle at bottom right, #160b06 0%, transparent 30%),
@@ -92,31 +93,55 @@ body {
   inset: 0;
   overflow: hidden;
   pointer-events: none;
-  /* передний план относительно фона, но ниже основного контента (z-50) */
-  z-index: 45;
+  z-index: 1;
+}
+
+.fixed-particles-layer .particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.site-particles {
+  width: 100%;
+}
+
+.fixed-particles-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  overflow: hidden;
+  transition: opacity 700ms ease;
+}
+
+.fixed-particles-layer--hidden {
+  opacity: 0;
+}
+
+.fixed-particles-layer--visible {
+  opacity: 1;
 }
 
 .spark {
   position: absolute;
+  z-index: 1;
   display: block;
   top: -35vh;
   border-radius: 9999px;
-  opacity: 1;
+  opacity: 0.35;
   background: radial-gradient(
     circle,
-    rgba(255, 255, 240, 0.98) 0%,
-    rgba(255, 230, 180, 0.92) 12%,
-    rgba(255, 190, 120, 0.65) 28%,
-    rgba(255, 150, 70, 0.3) 45%,
-    rgba(255, 120, 40, 0.1) 60%,
-    transparent 78%
+    rgba(255, 245, 220, 0.55) 0%,
+    rgba(255, 220, 165, 0.38) 16%,
+    rgba(255, 180, 105, 0.22) 34%,
+    rgba(255, 135, 60, 0.1) 52%,
+    transparent 76%
   );
-  filter: blur(8px);
-  /* На некоторых системах/драйверах screen выглядит как “ничего”.
-     Делаем видимым везде, а “screen” можно вернуть позже. */
+  filter: blur(10px);
   mix-blend-mode: normal;
-  /* Чуть ярче, чтобы было заметно на очень тёмном фоне */
-  box-shadow: 0 0 120px rgba(255, 170, 90, 0.16);
+  box-shadow: 0 0 60px rgba(255, 170, 90, 0.08);
   transform: translateZ(0);
   animation:
     fall var(--rise, 26s) linear infinite,
@@ -126,28 +151,31 @@ body {
 }
 
 .spark.s1 {
-  width: 140px;
-  height: 140px;
+  width: 70px;
+  height: 70px;
 }
+
 .spark.s2 {
+  width: 110px;
+  height: 110px;
+}
+
+.spark.s3 {
+  width: 160px;
+  height: 160px;
+}
+
+.spark.s4 {
   width: 220px;
   height: 220px;
-}
-.spark.s3 {
-  width: 320px;
-  height: 320px;
-}
-.spark.s4 {
-  width: 420px;
-  height: 420px;
 }
 
 @keyframes fall {
   from {
-    transform: translateY(-40vh) translateX(0) scale(0.92);
+    transform: translateY(-45vh) translateX(0) scale(0.92);
   }
   to {
-    transform: translateY(160vh) translateX(var(--drift, 80px)) scale(1.28);
+    transform: translateY(145vh) translateX(var(--drift, 80px)) scale(1.28);
   }
 }
 

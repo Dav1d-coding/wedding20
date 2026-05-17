@@ -3,26 +3,47 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
+    restart: unless-stopped
     volumes:
       - ./backend:/app
+      - ./data:/data
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
+      - DJANGO_DEBUG=False
+      - DJANGO_ALLOWED_HOSTS=your-domain.ru,www.your-domain.ru,localhost,127.0.0.1
+      - DJANGO_DB_PATH=/data/db.sqlite3
+    expose:
+      - "8000"
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    ports:
-      - "3001:3000"
-    # Томы только по подпапкам — остальной public из образа не затирается
+      args:
+        - NEXT_PUBLIC_API_BASE=https://your-domain.ru
+    restart: unless-stopped
     volumes:
       - ./frontend/public/videos:/app/public/videos
       - ./frontend/public/photos:/app/public/photos
     environment:
-      - NEXT_PUBLIC_API_BASE=http://localhost:8000
+      - NEXT_PUBLIC_API_BASE=https://your-domain.ru
     depends_on:
       - backend
+    expose:
+      - "3000"
 
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./deploy/certbot/www:/var/www/certbot
+      - ./deploy/certbot/conf:/etc/letsencrypt
+    # restart: unless-stopped
