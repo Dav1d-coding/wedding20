@@ -11,7 +11,7 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
       - DJANGO_DEBUG=False
-      - DJANGO_ALLOWED_HOSTS=your-domain.ru,www.your-domain.ru,localhost,127.0.0.1
+      - DJANGO_ALLOWED_HOSTS=wedding-david-anastasia.ru,62.217.179.153,www.wedding-david-anastasia.ru,localhost,127.0.0.1
       - DJANGO_DB_PATH=/data/db.sqlite3
     expose:
       - "8000"
@@ -21,13 +21,13 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - NEXT_PUBLIC_API_BASE=https://your-domain.ru
+        - NEXT_PUBLIC_API_BASE=http://62.217.179.153
     restart: unless-stopped
     volumes:
       - ./frontend/public/videos:/app/public/videos
       - ./frontend/public/photos:/app/public/photos
     environment:
-      - NEXT_PUBLIC_API_BASE=https://your-domain.ru
+      - NEXT_PUBLIC_API_BASE=https://wedding-david-anastasia.ru
     depends_on:
       - backend
     expose:
@@ -41,7 +41,6 @@ services:
       - frontend
     ports:
       - "80:80"
-      - "443:443"
     volumes:
       - ./deploy/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - ./deploy/certbot/www:/var/www/certbot
