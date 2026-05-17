@@ -11,7 +11,7 @@ import { AfterHeroParticles } from "@/components/AfterHeroParticles";
 export default function Home() {
   return (
     <main>
-      <CinematicHero />
+      <CinematicHero mediaSrc="/videos/hero.MP4" />
 
       <AfterHeroParticles count={18} />
 
