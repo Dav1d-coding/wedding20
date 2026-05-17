@@ -134,6 +134,7 @@ CORS_ALLOWED_ORIGINS: list[str] = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
+    "http://62.217.179.153",
     "http://wedding-david-anastasia.ru",
     "http://www.wedding-david-anastasia.ru",
 ]
