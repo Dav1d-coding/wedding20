@@ -1,0 +1,11 @@
+docker run --rm \
+  -v /var/www/wedding20/deploy/certbot/conf:/etc/letsencrypt \
+  -v /var/www/wedding20/deploy/certbot/www:/var/www/certbot \
+  certbot/certbot certonly \
+  --webroot \
+  --webroot-path=/var/www/certbot \
+  --email dryabovichev@mail.ru \
+  --agree-tos \
+  --no-eff-email \
+  -d wedding-david-anastasia.ru \
+  -d www.wedding-david-anastasia.ru
