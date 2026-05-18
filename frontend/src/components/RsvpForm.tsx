@@ -44,7 +44,10 @@ function Segment<T extends string>({
   options: { v: T; label: string }[];
 }) {
   return (
-    <div className="grid grid-cols-3 gap-2 rounded-[18px] glass p-2">
+    <div
+      className="grid gap-2 rounded-[18px] glass p-2"
+      style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
+    >
       {options.map((o) => {
         const active = o.v === value;
         return (
@@ -191,7 +194,6 @@ export function RsvpForm() {
                         setValue={setAttendance}
                         options={[
                           { v: "yes", label: "Приду" },
-                          { v: "maybe", label: "Не уверен(а)" },
                           { v: "no", label: "Не смогу" },
                         ]}
                       />
@@ -213,9 +215,10 @@ export function RsvpForm() {
                             className={cn(
                               "rounded-[18px] px-3 py-4 text-[13px] transition glass",
                               "flex items-center justify-center text-center leading-[1.1]",
+                              "outline-none focus-visible:ring-2 focus-visible:ring-[rgba(246,239,229,0.65)]",
                               x.on
-                                ? "shadow-[0_0_0_1px_rgba(242,182,109,0.30)] text-[rgba(246,239,229,0.90)]"
-                                : "text-[rgba(250,246,239,0.78)] hover:text-[rgba(250,246,239,0.92)]",
+                                ? "bg-[rgba(246,239,229,0.94)] text-[#1A1410] shadow-[0_0_0_2px_rgba(246,239,229,0.82),0_0_30px_rgba(246,239,229,0.18)]"
+                                : "text-[rgba(250,246,239,0.78)] shadow-[0_0_0_1px_rgba(246,239,229,0.14)] hover:text-[rgba(250,246,239,0.95)] hover:shadow-[0_0_0_1px_rgba(246,239,229,0.30)]",
                             )}
                           >
                             {x.label}

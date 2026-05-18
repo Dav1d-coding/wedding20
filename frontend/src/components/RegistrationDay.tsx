@@ -25,7 +25,7 @@ export function RegistrationDay() {
 
           <Reveal delay={0.08}>
             <p className="serif mt-8 text-[clamp(32px,6.5vw,64px)] leading-none tracking-[0.12em] text-[rgba(246,239,229,0.95)]">
-              08.06.2026
+              08.07.2026
             </p>
           </Reveal>
 
