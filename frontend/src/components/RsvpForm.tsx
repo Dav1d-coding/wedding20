@@ -217,7 +217,7 @@ export function RsvpForm() {
                               "flex items-center justify-center text-center leading-[1.1]",
                               "outline-none focus-visible:ring-2 focus-visible:ring-[rgba(246,239,229,0.65)]",
                               x.on
-                                ? "bg-[rgba(246,239,229,0.94)] text-[#1A1410] shadow-[0_0_0_2px_rgba(246,239,229,0.82),0_0_30px_rgba(246,239,229,0.18)]"
+                                ? "bg-[rgba(246,239,229,0.94)] shadow-[0_0_0_2px_rgba(246,239,229,0.82),0_0_30px_rgba(246,239,229,0.18)]"
                                 : "text-[rgba(250,246,239,0.78)] shadow-[0_0_0_1px_rgba(246,239,229,0.14)] hover:text-[rgba(250,246,239,0.95)] hover:shadow-[0_0_0_1px_rgba(246,239,229,0.30)]",
                             )}
                           >
