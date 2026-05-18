@@ -137,4 +137,6 @@ CSRF_TRUSTED_ORIGINS = [
     "http://62.217.179.153",
     "http://wedding-david-anastasia.ru",
     "http://www.wedding-david-anastasia.ru",
+    "https://wedding-david-anastasia.ru",
+    "https://www.wedding-david-anastasia.ru",
 ]
